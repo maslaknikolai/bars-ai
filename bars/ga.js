@@ -23,20 +23,26 @@ function reproduce() {
 function pickOne() {
   let index = 0;
   let r = random(1);
+
   while (r > 0) {
     r -= savedBirds[index].fitness;
     index += 1;
   }
+
   index -= 1;
+
   const bird = savedBirds[index];
+
   return bird.brain;
 }
 
 function calculateFitness() {
   let sum = 0;
+
   for (const bird of savedBirds) {
     sum += bird.score;
   }
+
   for (const bird of savedBirds) {
     bird.fitness = bird.score / sum;
   }

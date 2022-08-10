@@ -13,13 +13,12 @@ class Bird {
     if (brain) {
       this.brain = brain;
     } else {
-      const options = {
+      this.brain = ml5.neuralNetwork({
         inputs: 5,
         outputs: ["up", "down"],
         task: "classification",
         noTraining: true,
-      };
-      this.brain = ml5.neuralNetwork(options);
+      });
     }
   }
 
@@ -38,24 +37,27 @@ class Bird {
   }
 
   think(pipes) {
-    let closest = null;
+    let closestPipe = null;
     let closestD = Infinity;
+
     for (let i = 0; i < pipes.length; i += 1) {
       const d = pipes[i].x + pipes[i].w - this.x;
+
       if (d < closestD && d > 0) {
-        closest = pipes[i];
+        closestPipe = pipes[i];
         closestD = d;
       }
     }
 
     const inputs = [];
     inputs[0] = this.y / height;
-    inputs[1] = closest.top / height;
-    inputs[2] = closest.bottom / height;
-    inputs[3] = closest.x / width;
+    inputs[1] = closestPipe.top / height;
+    inputs[2] = closestPipe.bottom / height;
+    inputs[3] = closestPipe.x / width;
     inputs[4] = this.velocity / 10;
 
     const results = this.brain.classifySync(inputs);
+
     if (results[0].label === "up") {
       this.up();
     }

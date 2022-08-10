@@ -1,15 +1,18 @@
 const TOTAL = 100;
+const pipeSpeed = 6;
 const birds = [];
 let savedBirds = [];
 let pipes = [];
 let counter = 0;
 let slider;
+let checkbox;
 
 function setup() {
   createCanvas(640, 480);
   ml5.tf.setBackend("cpu");
 
   slider = createSlider(1, 10, 1);
+  checkbox = createCheckbox('Play', true);
 
   for (let i = 0; i < TOTAL; i += 1) {
     birds[i] = new Bird();
@@ -17,10 +20,15 @@ function setup() {
 }
 
 function draw() {
+  if (!checkbox.checked()) {
+    return
+  }
+
   for (let n = 0; n < slider.value(); n += 1) {
     if (counter % 75 === 0) {
       pipes.push(new Pipe());
     }
+
     counter += 1;
 
     for (let i = pipes.length - 1; i >= 0; i -= 1) {
@@ -43,7 +51,7 @@ function draw() {
       }
     }
 
-    for (const bird of birds) {
+    for (let bird of birds) {
       bird.think(pipes);
       bird.update();
     }
@@ -57,11 +65,11 @@ function draw() {
 
   background(0);
 
-  for (const bird of birds) {
+  for (let bird of birds) {
     bird.show();
   }
 
-  for (const pipe of pipes) {
+  for (let pipe of pipes) {
     pipe.show();
   }
 }
